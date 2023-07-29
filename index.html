@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.css" integrity="sha512-ITS8GbPjCRA7c/PBl6Kqb9XjvQbKMBXpzEmpi7BgRwf6mUCySmHbF9opWfVUQvbdiYouDYxhxttWS+wyq4l+Ug==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet"> 
+    <style>
+
+        @keyframes spin{
+            from{
+                  transform: rotate(0deg);
+            }to{
+                 transform: rotate(360deg);
+            }
+        }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        
+        
+        .bg{
+            background-color:#f6f6f6 ;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            height: 100vh;
+        }
+        .container{
+            background-color: #ffffff; 
+            width: 315px;
+            height: 480px;
+            /* border: 2px solid red; */
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow:10px 10px 11px 0px #817878
+        
+        }
+        img{
+            width: 230px; 
+            height: 230px;
+            border-radius: 50%; 
+            box-shadow: 8px 13px 20px 0px rgb(201 187 187);
+            /* animation: spin 3s linear 1s infinite ; */
+        } 
+        h2{
+            padding-top: 20px;
+            padding-bottom: 10px;
+            text-shadow: 1px 1px 2px rgb(206, 186, 189);
+            text-transform: capitalize;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+        }
+        h3{
+            padding-bottom: 32px;
+            text-shadow: 1px 1px 2px rgb(206, 186, 189);
+            text-transform: capitalize;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            letter-spacing: 1px;
+            font-size: 15px;
+        }
+        .controls{
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-evenly;
+            font-size: 24px;
+        }
+        .btn{
+            display: inline-block;
+            /* border: 2px solid red; */
+            padding-left: 15px;
+            padding-top: 5px;
+            padding-bottom: 10px;
+            padding-right: 15px;
+            background-color: black;
+            border-radius: 50%;
+            margin-top: -10px;
+            filter: drop-shadow(2px 2px 3px #928080);
+        }
+        .fa-play{
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .fa{
+            filter: drop-shadow(6px 12px 15px #928080);
+            cursor: pointer;
+        }
+        .timer{
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress_bar{
+            height: 7px;
+            width: 100%;
+            /* border: 2px solid black; */
+            box-sizing: border-box;
+            border-radius: 3px;
+            cursor: pointer;
+            /* box-shadow: 2px 3px 35px 1px #928080; */
+            background-color: rgb(201 187 187 / 37%) ;
+        }
+        .progress{
+            background-color: black;
+            width: 0%;
+            height: 100%;
+            border-radius: 3px;
+        }
+        .start{
+            padding-left: 6px;
+            padding-bottom: 3px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-size: 10px;
+        }
+        .end{
+            padding-right: 6px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;;
+        }
+        .progress_div{
+            padding-top: 8px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <div class="bg">
+        <div class="container">
+            <h2 id="songname" > Song Name </h1>
+            <h3 id="singer"> Artist Name </h3>
+            <div class="image">
+                <img id="rotate" src="https://source.unsplash.com/1600x900/?nature,music" alt="Error">
+            </div>
+            <div class="progress_div" id="progress_div">
+                <div class="timer" id="timer">
+                    <div class="start" id="start">00:00</div>
+                    <div class="end" id="end">00:31</div>
+                </div>
+                <div class="progress_bar" id="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+            </div>
+            <div class="controls">
+                <i class="fa fa-backward" id="prev" aria-hidden="true"></i>
+                <div class="btn" id="btnid">
+                     <i class="fa fa-play mainbtn" id="cplay" onclick="play()" aria-hidden="true"></i>
+                </div>
+                <!-- <i class="fa fa-pause" id="pause" aria-hidden="true"></i>  -->
+                <i class="fa fa-forward" id="next" aria-hidden="true"></i>
+            </div>
+            <audio src="audio/music3.mp3" ></audio>
+        </div>
+    </div>
+
+    <script>
+        const arr= [
+            {
+                name:"music1",
+                link:"audio/music1.mp3",
+                photo:"photos/photo1.jpg",
+                artist:"player1" 
+            },
+            {
+                name:"music2",
+                link:"audio/music2.mp3",
+                photo:"photos/photo2.jpg",
+                artist:"player2" 
+            },
+            {
+                name:"music3",
+                link:"audio/music3.mp3",
+                photo:"photos/photo3.jpg",
+                artist:"player3" 
+            }
+        ]
+        
+        let visited=false;
+        let val=0;
+        const button= document.getElementsByClassName("fa-play");
+        const anime= document.getElementById("rotate");
+        const cplay=document.getElementById("cplay")
+
+        const sname= document.getElementById("singer");
+        sname.innerHTML=arr[val].artist;
+        const image= document.querySelector("img");
+        image.src=arr[val].photo;
+        const sound= document.querySelector("audio");
+        sound.src=arr[val].link;
+        const musicname= document.getElementById("songname")
+        musicname.innerHTML=arr[val].name;
+        
+
+        const startmusic= ()=>{
+            const music= document.querySelector("audio");
+            const anime= document.getElementById("rotate");
+            anime.style.animation="spin 3s linear 1s infinite"; 
+            music.play();
+            visited=true;
+        }
+        const pausemusic= ()=>{
+            const music= document.querySelector("audio");
+            music.pause();
+            anime.style.animation="stop 0"
+            visited=false;
+        }
+        const play= ()=>{
+        
+        if(visited==true){
+            pausemusic();
+            cplay.classList.replace("fa-pause","mainbtn");
+            document.getElementById("btnid").style.background="black"
+           cplay.style.color="white"
+        }else{
+            startmusic();
+            cplay.classList.replace("mainbtn","fa-pause");
+            document.getElementById("btnid").style.background="white"
+            cplay.style.color="black"
+            cplay.style.fontSize="16px"
+             }
+        }
+   
+        const load=(song)=>{     
+            musicname.innerHTML=song.name;
+            image.src=song.photo;
+            sound.src=song.link;
+            sname.innerHTML=song.artist;
+            cplay.classList.replace("mainbtn","fa-pause");
+        }
+
+        const funprev=()=>{
+            if(val==0){
+                val=val+3;
+            }
+            val=val-1;
+            load(arr[val])
+            startmusic();
+        }
+        const funnext=()=>{
+            if(val==2){
+                val=val-3;
+            }
+            val=val+1;
+            load(arr[val])
+            startmusic();
+        }
+      
+        const music= document.querySelector("audio");
+        document.getElementById("prev").addEventListener("click", funprev);
+        document.getElementById("next").addEventListener("click", funnext);
+        
+        music.addEventListener("timeupdate", (event)=>{
+
+            var currentTime = Math.floor(music.currentTime);
+            
+            let bar=document.getElementById("progress-bar")
+           
+            const updatebar=(event)=>{
+                currentTime=Math.floor(((event.offsetX)/274)*music.duration)
+                music.currentTime=currentTime;
+            }
+            bar.addEventListener("click", updatebar)
+          
+            const duration = Math.floor(music.duration);
+            const min=Math.floor(duration/60);
+            const sec=Math.floor(duration%60);
+            if(duration){
+                if(min<10){
+                    if(sec<10){
+                        document.getElementById("end").innerHTML= `0${min}:0${sec}`
+                    }else{
+                        document.getElementById("end").innerHTML= `0${min}:${sec}`
+                    }
+                }else{
+                    document.getElementById("end").innerHTML= `${min}:${sec}`
+                }   
+            }
+            const currmin=Math.floor(currentTime/60);
+            const currsec=Math.floor(currentTime%60);
+            if(currmin<10){
+                if(currsec<10){
+                    document.getElementById("start").innerHTML=`0${currmin}:0${currsec}`  
+                }else{
+                    document.getElementById("start").innerHTML=`0${currmin}:${currsec}`
+                }
+            }else{
+                    document.getElementById("start").innerHTML=`${currmin}:${currsec}` 
+            }
+        
+            let barwidth=(currentTime/duration)*100
+            document.getElementById("progress").style.width=`${barwidth}%`
+           
+        });
+        music.addEventListener("ended", funnext)
+
+    </script>
+
+</body>
+</html>
